@@ -30,52 +30,97 @@ class Conveyor:
         for i in range(len(self.reload_time)):
             print(self.reload_time[i])
 
-    def gen_jobs(self, amount_jobs):
+    def gen_transitions(self, amount_transitions):
         """Генерация вариантов работ"""
-        variables = [i for i in range(self.number_of_details)]
-        list_of_variables = []
-        for i in range(amount_jobs):
-            list_of_variables.append(random.shuffle(variables))
-            if len(list_of_variables) != 1:
-                for i in range(len(list_of_variables)):
-                    while True:
-                        if list_of_variables[i] != list_of_variables[-1]:
-                            break
-                        list_of_variables.pop()
-                        list_of_variables.append(random.shuffle(variables))
+        
+        base_transition = [i for i in range(self.number_of_details)]
+        transitions = []
+        for i in range(amount_transitions):
+            if i == 0:
+                random.shuffle(base_transition)
+                print("Сгенерирован переход:", base_transition)
+                transitions.append(base_transition)
+            else:
+                base_transition = [i for i in range(self.number_of_details)]
+                random.shuffle(base_transition)
+                counter = 0
+                while counter != len(transitions):
+                    if base_transition == transitions[counter]:
+                        base_transition = [i for i in range(self.number_of_details)]
+                        random.shuffle(base_transition)
+                        counter = 0
+                    else:
+                        counter += 1
+                print("Сгенерирован переход:", base_transition)
+                transitions.append(base_transition)
 
-        return list_of_variables
+        return transitions
 
-    def info_jobs(self, list_of_variables):
-        print("Варианты работ:")
-        for i in range(len(list_of_variables)):
-            print(list_of_variables[i])
+    def get_target_functions(self, transitions):
+        target_functions = []
+        z = 0
+        for i in range(len(transitions)):
+            for j in range(len(transitions[i])):
+                try:
+                    z += (self.spent_time[transitions[i][j]] + self.reload_time[transitions[i][j]][transitions[i][j + 1]])
+                except IndexError:
+                    z += (self.spent_time[transitions[i][j]] + self.reload_time[transitions[i][j]][transitions[i][j]])
+            target_functions.append(z)
+            z = 0
+        
+        print("---Расчет целевых функций---")
+        for i in range(len(transitions)):
+            print("z:", transitions[i], "->", target_functions[i])
+
+        return target_functions
+
+
+
+    def get_best_transitions(self, transitions):
+        str_transitions = [''.join(str(i)) for i in transitions]
+        hash_table = dict(zip(str_transitions, self.get_target_functions(transitions)))
+        list_hash_table = list(hash_table.items())
+        list_hash_table.sort(key=lambda i: i[1])
+        list_hash_table = [list_hash_table[i] for i in range(len(list_hash_table) // 2)]
+        for i in list_hash_table:
+            print(i[0], ":", i[1])
+
+        return list_hash_table
+
+    def gen_neighborhood(self):
+        neighborhood = []
+        for i in range(self.number_of_details - 1):
+            neighborhood.append([i, i + 1])
+
+        print(neighborhood)
+
+    def get_solo_target_function(self, transition):
+        z = 0
+        for j in range(len(transition)):
+            try:
+                z += (self.spent_time[transition[j]] + self.reload_time[transition[j]][transition[j + 1]])
+            except IndexError:
+                z += (self.spent_time[transition[j]] + self.reload_time[transition[j]][transition[j]])
+
+        print(z)
+        return z
 
 
 def main():
     """Область тестирования модуля"""
 
-    while True:
-        shell = input(">> ")
-        if shell == "новый пустой":
-            TestObject = Conveyor(0, [], [[]]) # создаем пустой конвеер
-            break
-        elif shell == "новый пример":
-            TestObject = Conveyor(2, [1, 1], [[1, 1], [1, 1]])
-            break
-        elif shell == "выход":
-            return
-        else:
-            print("Комманда не найдена")
-
-    while True:
-        shell = input(">> ")
-        if shell == "вывод":
-            TestObject.info()
-        elif shell == "выход":
-            return
-        else:
-            print("Комманда не найдена")
+    print("---Новый пример---")
+    TestObject = Conveyor(4, [5, 3, 2, 7], [[0, 8, 3, 8], [10, 0, 7, 3], [15, 11, 0, 5], [12, 5, 3, 0]])
+    print("---Вывод работы---")
+    TestObject.info()
+    print("---Генерация переходов---")
+    test_list = TestObject.gen_transitions(12)
+    print("---Выбор лучших---")
+    best_list = TestObject.get_best_transitions(test_list)
+    print("---Генерация окрестностей---")
+    neighborhood = TestObject.gen_neighborhood()
+    print("---Получение целевой функции для одного перехода---")
+    solo_list = TestObject.get_solo_target_function(test_list[0])
 
 if __name__ == "__main__":
     main()
