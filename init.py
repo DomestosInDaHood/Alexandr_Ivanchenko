@@ -1,81 +1,64 @@
-#! /usr/bin/env python3
+"""В цьому модулі знаходятся функції для ініціалазі' обєкту Conveyor,
+різними способами"""
 
-"""В данном модуле содержатся функции для иницализации объекта Конвеер"""
-
+import random
+import xlrd
 from conveyor import Conveyor
 
-def cli():
-    """В этой функции производится ручная инициализация объекта класса
-    Conveyor и валидация ввода.
+def example():
+    """Демонстраційний приклад"""
+    Job = Conveyor(4, [5, 3, 2, 7], [[0, 8, 3, 8],
+                           [10, 0, 7, 3], [15, 11, 0, 5],
+                           [12, 5, 3, 0]])
 
+    return Job
+
+
+def keyboard():
+    """Шаблон для ручного вводу"""
+    Job = Conveyor(3, [1, 1, 1], [[0, 1, 1], [1, 0, 1], [1, 1, 0]])
+    
+    return Job
+
+
+def rand_init(details_min, details_max, time_min, time_max):
+    """Генерує випадковий конвеєр по параметрам з аргументів
+    details_min - мінімум деталей
+    details_max - максимум деталей
+    time_min - мінамальний час обробки деталі та перенаголодження верстату
+    time_max - максимальний час обратки деталі та переналогдження верстау
     """
-    print("\t\t\t --- Этап ввода данных ---")
+    number_of_details = random.randint(details_min, details_max)
 
-    print("Введите количество деталей")
-    while True:
+    spent_time = [random.randint(time_min, time_max) for i in range(number_of_details)]
+
+    reload_time = [[random.randint(time_min, time_max) for i in 
+                    range(number_of_details)] for i in range(number_of_details)]
+
+    for i in range(number_of_details): # заповнюємо головну діагональ нулями
+        reload_time[i][i] = 0
+
+    Job = Conveyor(number_of_details, spent_time, reload_time)
+    
+    return Job
+
+def excel_file(input_file):
+    """"""
+
+    book = xlrd.open_workbook(input_file)
+    sheet = book.sheet_by_index(0)
+
+    if sheet.nrows != sheet.ncols + 2:
+        return "SizeError"
+    else:
         try:
-            number_of_detailes = int(input(': '))
+            number_of_details = sheet.ncols
+            spent_time = [int(sheet.cell(0, i).value) for i in range(number_of_details)] 
+            reload_time = [[int(sheet.cell(i + 2, j).value) for j in range(number_of_details)] for i in range(number_of_details)]
         except ValueError:
-            print("Это не целое число.")
-        else:
-            break
-    
-    # Создание последовательность от 0 до number_of_detailes в формате string
-    details_range = [str(i) for i in range(number_of_detailes)]
-    print("Введите время производства i-ой детали в минутах и нажмите Enter")
-    spent_time = []
-    for i in details_range:
-        while True:
-            try:
-                in_string = input("i" + i + ": ")
-                spent_time.append(int(in_string))
-            except ValueError:
-                print('Часть данных не является целочислеными')
-                spent_time.pop()
-            else:
-                break
-    print('Ввод матрици затраты перезагрузки')
-    print('Для каждой i-ой детали введите время перезагрузки j-ой детали после нее')
-    reload_time = []
-    for i in range(number_of_detailes):
-        print("---i" + str(i) +"---\n")
-        vector = []
-        for j in range(number_of_detailes):
-            while True:
-                try:
-                    in_string = input("j" + str(j) + ': ')
-                    vector.append(int(in_string))
-                except ValueError:
-                    print('Часть данных не является целочислеными')
-                    vector.pop()
-                else:
-                    break
-        reload_time.append(vector)
-    
-    ResultObject = Conveyor(number_of_detailes, spent_time, reload_time)
+            return "ValueError"
 
-    return ResultObject
 
-def main():
-    """Область тестирования модуля"""
-    while True:
-        shell = input(">>" )
-        if shell == "ввод":
-            TestObject = cli()
-            break
-        elif shell == "выход":
-            return
-        else:
-            print("Комманда не найдена")
+        Job = Conveyor(number_of_details, spent_time, reload_time)
 
-    while True:
-        shell = input(">> ")
-        if shell == "вывод":
-            TestObject.info()
-        elif shell == "выход":
-            return
-        else:
-            print("Комманда не найдена")
-
-if __name__ == "__main__":
-    main()
+        return Job

@@ -77,13 +77,22 @@ class Conveyor:
 
 
     def get_best_transitions(self, transitions):
-        str_transitions = [''.join(str(i)) for i in transitions]
-        hash_table = dict(zip(str_transitions, self.get_target_functions(transitions)))
+        tuple_transitions = transitions.copy()
+        for i in range(len(transitions)):
+            tuple_transitions[i] = tuple(transitions[i])
+        hash_table = dict(zip(tuple_transitions, self.get_target_functions(transitions)))
         list_hash_table = list(hash_table.items())
         list_hash_table.sort(key=lambda i: i[1])
         list_hash_table = [list_hash_table[i] for i in range(len(list_hash_table) // 2)]
         for i in list_hash_table:
             print(i[0], ":", i[1])
+
+        for i in range(len(list_hash_table)):
+            list_hash_table[i] = list(list_hash_table[i])
+            list_hash_table[i][0] = list(list_hash_table[i][0])
+            
+        
+        print(list_hash_table)
 
         return list_hash_table
 
@@ -93,6 +102,8 @@ class Conveyor:
             neighborhood.append([i, i + 1])
 
         print(neighborhood)
+
+        return neighborhood
 
     def get_solo_target_function(self, transition):
         z = 0
