@@ -227,8 +227,8 @@ class Application:
 
         try:
             number_of_details = int(self.number_of_details.get())
-            spent_time = [int(self.time_vector[i].get()) for i in range(len(self.time_vector))]
-            reload_time = [[int(self.time_matrix[i][j].get()) for j in range(len(self.time_matrix))] for i in range(len(self.time_matrix))]
+            spent_time = [int(self.time_vector[i].get()) for i in range(number_of_details)]
+            reload_time = [[int(self.time_matrix[i][j].get()) for j in range(number_of_details)] for i in range(number_of_details)]
 
             self.Job = Conveyor(number_of_details, spent_time, reload_time)
             if self.algo_choice.get() == "Жадібний":
