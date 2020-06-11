@@ -49,7 +49,7 @@ class Application:
                                        "Использовать конфигурацию по умолчанию?")
                 if mess == True:
                     self.clear_window("start")
-                    self.Job = init.rand_init(3, 20, 0, 10000)
+                    self.Job = init.rand_init(3, 100, 0, 10000)
                     self.Job.info()
                     self.draw_input_sheet()
                 else:
@@ -61,9 +61,9 @@ class Application:
                                     text="Мінімальні час обробки деталі та час перенаголадження верстату")
                     self.l4 = Label(self.window,
                                     text="Максимальні час обробки деталі та час перенаголадження верстату")
-                    self.details_min = Spinbox(self.window, from_=3, to=20, 
+                    self.details_min = Spinbox(self.window, from_=3, to=100, 
                                             width=2)
-                    self.details_max = Spinbox(self.window, from_=3, to=20,
+                    self.details_max = Spinbox(self.window, from_=3, to=100,
                                             width=2)
                     self.time_min = Spinbox(self.window, from_=0, to=9999,
                                             width=4)
@@ -150,11 +150,13 @@ class Application:
         
         details_var = IntVar()
         details_var.set(self.Job.number_of_details)
-        self.number_of_details = Spinbox(self.window, from_=3, to=20, width=2, textvariable=details_var)
+        self.number_of_details = Spinbox(self.window, from_=3, to=1000, width=2, textvariable=details_var)
+
+        self.present_size = int(self.number_of_details.get())
 
 
         self.time_vector = []
-        for i in range(20):
+        for i in range(int(self.number_of_details.get())):
             if i < len(self.Job.spent_time):
                 vector_var = IntVar()
                 vector_var.set(self.Job.spent_time[i])
@@ -165,9 +167,9 @@ class Application:
                 self.time_vector.append(Spinbox(self.window, from_=0, to=9999, width=4, textvariable=vector_var))
 
         self.time_matrix = []
-        for i in range(20):
+        for i in range(int(self.number_of_details.get())):
             vector = []
-            for j in range(20):
+            for j in range(int(self.number_of_details.get())):
                 if i < len(self.Job.reload_time) and j < len(self.Job.reload_time):
                     matrix_var = IntVar()
                     matrix_var.set(self.Job.reload_time[i][j])
@@ -211,8 +213,8 @@ class Application:
         self.l2.grid_forget()
         self.l3.grid_forget()
         self.number_of_details.grid_forget()
-        for i in range(20):
-            for j in range(20):
+        for i in range(self.present_size):
+            for j in range(self.present_size):
                 self.time_vector[i].grid_forget()
                 self.time_matrix[i][j].grid_forget()
         if self.algo_choice.get() == "Бджолиний":
@@ -247,8 +249,8 @@ class Application:
         self.l2.grid_forget()
         self.l3.grid_forget()
         self.number_of_details.grid_forget()
-        for i in range(20):
-            for j in range(20):
+        for i in range(100):
+            for j in range(100):
                 self.time_vector[i].grid_forget()
                 self.time_matrix[i][j].grid_forget()
 
@@ -287,6 +289,9 @@ class Application:
 
 def main():
     window = Tk()
+    #window.tk.eval('lappend auto_path {%s}' % breeze_theme_path)
+    #theme = ttk.Style()
+    #theme.theme_use('Breeze')
     App = Application(window)
     window.mainloop()
 
