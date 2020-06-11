@@ -1,4 +1,5 @@
 import copy
+import init
 
 def bee(Job, transit_choice):
     zmax_counter = 0
@@ -78,8 +79,11 @@ def greedy(Job):
         reload_time[i][hyp] = 10000
 
     print(reload_time)
+
     for i in range(len(reload_time)):
         m = min(reload_time[i])
+        print(m)
+
         if i == 0:
             gm = m
             gi = i
@@ -113,3 +117,10 @@ def greedy(Job):
     print(z)
     
     return result, z
+
+def main():
+    Job = init.example()
+    rezulr, z = greedy(Job)
+
+if __name__ == "__main__":
+    main()
