@@ -249,8 +249,8 @@ class Application:
         self.l2.grid_forget()
         self.l3.grid_forget()
         self.number_of_details.grid_forget()
-        for i in range(100):
-            for j in range(100):
+        for i in range(self.present_size):
+            for j in range(self.present_size):
                 self.time_vector[i].grid_forget()
                 self.time_matrix[i][j].grid_forget()
 
