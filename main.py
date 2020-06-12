@@ -191,21 +191,22 @@ class Application:
         self.window.bind("<r>", self.reload_page)
         self.window.bind("<Return>", self.valid_sheet)
 
-        self.l1.grid(row=0, column=0, columnspan=int(self.number_of_details.get()))
-        self.l2.grid(row=2, column=0, columnspan=int(self.number_of_details.get()))
-        self.l3.grid(row=4, column=0, columnspan=int(self.number_of_details.get()))
+        if int(self.number_of_details.get()) <= 50:
+            self.l1.grid(row=0, column=0, columnspan=int(self.number_of_details.get()))
+            self.l2.grid(row=2, column=0, columnspan=int(self.number_of_details.get()))
+            self.l3.grid(row=4, column=0, columnspan=int(self.number_of_details.get()))
 
-        self.number_of_details.grid(row=1, column=0)
+            self.number_of_details.grid(row=1, column=0)
 
 
-        for i in range(int(self.number_of_details.get())):
-            for j in range(int(self.number_of_details.get())):
-                self.time_vector[i].grid(row=3, column=i)
-                self.time_matrix[i][j].grid(row=i+5, column=j)
+            for i in range(int(self.number_of_details.get())):
+                for j in range(int(self.number_of_details.get())):
+                    self.time_vector[i].grid(row=3, column=i)
+                    self.time_matrix[i][j].grid(row=i+5, column=j)
 
-        if self.algo_choice.get() != "Жадібний":
-            self.l4.grid(row=6+self.Job.number_of_details, column=0)
-            self.choice_transit.grid(row=6+self.Job.number_of_details, column=1)
+            if self.algo_choice.get() != "Жадібний":
+                self.l4.grid(row=6+self.Job.number_of_details, column=0)
+                self.choice_transit.grid(row=6+self.Job.number_of_details, column=1)
 
                 
 
@@ -282,7 +283,8 @@ class Application:
             self.S = Label(self.window, text=str(S_greedy))
             self.z_max = Label(self.window, text=str(zmax_greedy))
             self.greedy_time = Label(self.window, text= str(greedy_time))
-            self.end_button = Button(self.window, text="Ще", command=main)
+            self.end_button = Button(self.window, text="Ще")
+            self.end_button.bind("<Button-1>", self.restart)
 
             self.l1.grid(row=0, column=0)
             self.S.grid(row=0, column=1)
@@ -298,7 +300,8 @@ class Application:
             self.z_max = Label(self.window, text=str(zmax_bee))
             self.l3.configure(text="Час виконання алгоритму:")
             self.bee_time = Label(self.window, text=str(bee_time))
-            self.end_button = Button(self.window, text="Ще", command=main)
+            self.end_button = Button(self.window, text="Ще")
+            self.end_button.bind("<Button-1>", self.restart)
 
             self.l1.grid(row=0, column=0)
             self.S.grid(row=0, column=1)
@@ -320,7 +323,8 @@ class Application:
             self.zmax_bee = Label(self.window, text=str(zmax_bee))
             self.greedy_time = Label(self.window, text=str(greedy_time))
             self.bee_time = Label(self.window, text=str(bee_time))
-            self.end_button = Button(self.window, text="Ще", command=main)
+            self.end_button = Button(self.window, text="Ще")
+            self.end_button.bind("<Button-1>", self.restart)
 
             self.l1.grid(row=0, column=0)
             self.S_greedy.grid(row=0, column=1)
@@ -354,6 +358,40 @@ class Application:
             self.time_min.grid_forget()
             self.time_max.grid_forget()
             self.next_button.grid_forget()
+
+    def restart(self, event):
+        if self.algo_choice.get() == "Жадібний":
+            self.l1.grid_forget()
+            self.S.grid_forget()
+            self.l2.grid_forget()
+            self.z_max.grid_forget()
+            self.l3.grid_forget()
+            self.greedy_time.grid_forget()
+            self.end_button.grid_forget()
+        elif self.algo_choice.get() == "Бджолиний":
+            self.l1.grid_forget()
+            self.S.grid_forget()
+            self.l2.grid_forget()
+            self.z_max.grid_forget()
+            self.l3.grid_forget()
+            self.bee_time.grid_forget()
+            self.end_button.grid_forget()
+        else:
+            self.l1.grid_forget()
+            self.S_greedy.grid_forget()
+            self.l2.grid_forget()
+            self.zmax_greedy.grid_forget()
+            self.l3.grid_forget()
+            self.S_bee.grid_forget()
+            self.l4.grid_forget()
+            self.zmax_bee.grid_forget()
+            self.l5.grid_forget()
+            self.greedy_time.grid_forget()
+            self.l6.grid_forget()
+            self.bee_time.grid_forget()
+            self.end_button.grid_forget()
+
+        self.__init__(self.window)
 
 
 def main():
