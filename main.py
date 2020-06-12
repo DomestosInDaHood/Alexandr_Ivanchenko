@@ -146,13 +146,13 @@ class Application:
             self.draw_input_sheet()
 
     def draw_input_sheet(self):
-        self.l1.configure(text="Кількість деталей")
+        self.l1.configure(text="Кількість деталей\n(Після зміни значеня натисніть R)")
         self.l2.configure(text="Час віготовлення деталей")
         self.l3 = Label(self.window, text="Матриця перенаголадження")
         
         details_var = IntVar()
         details_var.set(self.Job.number_of_details)
-        self.number_of_details = Spinbox(self.window, from_=3, to=1000, width=2, textvariable=details_var)
+        self.number_of_details = Spinbox(self.window, from_=3, to=1000, width=4, textvariable=details_var)
 
         self.present_size = int(self.number_of_details.get())
 
@@ -186,7 +186,7 @@ class Application:
 
         if self.algo_choice.get() != "Жадібний":
             self.l4 = Label(text="Кількість напрямків")
-            self.choice_transit = Spinbox(self.window, from_=1, to=factorial(self.Job.number_of_details), width=19)
+            self.choice_transit = Spinbox(self.window, from_=1, to=factorial(self.Job.number_of_details), width=4)
 
         self.window.bind("<r>", self.reload_page)
         self.window.bind("<Return>", self.valid_sheet)
@@ -205,8 +205,8 @@ class Application:
                     self.time_matrix[i][j].grid(row=i+5, column=j)
 
             if self.algo_choice.get() != "Жадібний":
-                self.l4.grid(row=6+self.Job.number_of_details, column=0)
-                self.choice_transit.grid(row=6+self.Job.number_of_details, column=1)
+                self.l4.grid(row=6+self.Job.number_of_details, column=0, columnspan=int(self.number_of_details.get()))
+                self.choice_transit.grid(row=7+self.Job.number_of_details, column=0)
 
                 
 
