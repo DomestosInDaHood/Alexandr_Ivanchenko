@@ -67,7 +67,8 @@ def bee(Job, transit_choice):
             zmax_counter = 0
         else:
             zmax_counter += 1
-
+        
+    S = [i + 1 for i in S]
     print(S, z_max)
 
     return S, z_max
@@ -115,7 +116,7 @@ def greedy(Job):
 
     z = Job.get_solo_target_function(result)
     print(z)
-    
+    result = [i + 1 for i in result]
     return result, z
 
 def main():
