@@ -191,22 +191,20 @@ class Application:
         self.window.bind("<r>", self.reload_page)
         self.window.bind("<Return>", self.valid_sheet)
 
-        if int(self.number_of_details.get()) <= 50:
-            self.l1.grid(row=0, column=0, columnspan=int(self.number_of_details.get()))
-            self.l2.grid(row=2, column=0, columnspan=int(self.number_of_details.get()))
+        self.l1.grid(row=0, column=0, columnspan=int(self.number_of_details.get()))
+        self.l2.grid(row=2, column=0, columnspan=int(self.number_of_details.get()))
+        self.number_of_details.grid(row=1, column=0)   
+            
+        if int(self.number_of_details.get()) <= 50:    
             self.l3.grid(row=4, column=0, columnspan=int(self.number_of_details.get()))
-
-            self.number_of_details.grid(row=1, column=0)
-
-
             for i in range(int(self.number_of_details.get())):
                 for j in range(int(self.number_of_details.get())):
                     self.time_vector[i].grid(row=3, column=i)
                     self.time_matrix[i][j].grid(row=i+5, column=j)
 
-            if self.algo_choice.get() != "Жадібний":
-                self.l4.grid(row=6+self.Job.number_of_details, column=0, columnspan=int(self.number_of_details.get()))
-                self.choice_transit.grid(row=7+self.Job.number_of_details, column=0)
+        if self.algo_choice.get() != "Жадібний":
+            self.l4.grid(row=6+self.Job.number_of_details, column=0, columnspan=int(self.number_of_details.get()))
+            self.choice_transit.grid(row=7+self.Job.number_of_details, column=0)
 
                 
 
